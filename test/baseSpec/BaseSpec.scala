@@ -7,14 +7,12 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
-import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
-import play.api.test.FakeRequest
-import play.api.test.Helpers.{DELETE, GET, POST, PUT}
+import play.api.mvc.MessagesControllerComponents
+import shared.TestRequest
 
 import scala.concurrent.ExecutionContext
 
@@ -28,8 +26,7 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
 
   lazy val component: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
 
-
-  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   lazy val injector: Injector = app.injector
 
   override def fakeApplication(): Application =
@@ -39,20 +36,7 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
       ))
       .build()
 
-  lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest("", "").withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-  implicit val messages: Messages = messagesApi.preferred(fakeRequest)
 
-  def buildPost(url: String): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(POST, url).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-
-  def buildGet(url: String): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, url).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-
-  def buildPut(url: String): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(PUT, url).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-
-  def buildDelete(url: String): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(DELETE, url).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+  protected val testRequest: TestRequest = new TestRequest(messagesApi)
 
 }
