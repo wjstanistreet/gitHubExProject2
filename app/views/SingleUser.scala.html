@@ -1,0 +1,14 @@
+@this()
+
+@(user: User)
+
+@main(user.login){
+
+  <h1>@user.login</h1>
+  <div>
+    <p>Created On: @{user.created_at.split("T")(0)}</p>
+    @if(!user.location.isEmpty){<p>Location: @user.location</p>}
+    <p>Followers: @user.followers</p>
+    <p>Following: @user.following</p>
+  </div>
+}

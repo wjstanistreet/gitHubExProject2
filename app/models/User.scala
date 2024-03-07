@@ -1,15 +1,14 @@
 package models
 
+import akka.http.scaladsl.model.DateTime
 import play.api.libs.json.{Json, OFormat}
 
 case class User(login: String,
                 created_at: String,
-                location: String,
+                location: Option[String],
                 followers: Int,
-                following: Int
-               ) {}
+                following: Int) {}
 
 object User {
-
   implicit val formats: OFormat[User] = Json.format[User]
 }
